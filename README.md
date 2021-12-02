@@ -23,3 +23,6 @@ node index.js
 ~~~
 
 Open [Swagger](http://localhost:3000/api-docs/)
+
+## Contacts
+Have any questions? Create an issue or write down your question in [Telegram Chat](https://t.me/+1p57p8EdeO5jN2Ey) 
