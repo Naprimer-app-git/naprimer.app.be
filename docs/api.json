@@ -1,0 +1,1559 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "Naprimer backend.",
+    "title": "Naprimer API",
+    "version": "0.0.2"
+  },
+  "host": "localhost:3000",
+  "basePath": "",
+  "paths": {
+    "/management/ping": {
+      "get": {
+        "description": "Check if application is running and get its version",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "management"
+        ],
+        "summary": "Show application version",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/api.healthCheck"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/api.errorOut"
+            }
+          }
+        }
+      }
+    },
+    "/v1/oauth/token": {
+      "post": {
+        "description": "The token endpoint is used by the client to obtain an access token by",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "auth"
+        ],
+        "summary": "Exchange grant for a token",
+        "parameters": [
+          {
+            "description": "authorization grant or refresh token",
+            "name": "inp",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/login.Input"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/oauth2.Token"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/api.errorMessage"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/api.errorMessage"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/api.errorMessage"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/api.errorMessage"
+            }
+          }
+        }
+      }
+    },
+    "/v1/signup": {
+      "post": {
+        "description": "Signup endpoint.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "auth"
+        ],
+        "summary": "register new user.",
+        "parameters": [
+          {
+            "description": "user info and password",
+            "name": "inp",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/registration.Input"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/registration.Output"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/api.errorMessage"
+            }
+          },
+          "401": {
+            "description": "User Already Registered",
+            "schema": {
+              "$ref": "#/definitions/api.errorMessage"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/api.errorMessage"
+            }
+          }
+        }
+      }
+    },
+    "/v1/feed": {
+      "get": {
+        "description": "Get recommended content.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "videos"
+        ],
+        "summary": "List videos recommended for a user",
+        "parameters": [
+          {
+            "type": "boolean",
+            "description": "is feed rebuild needed?",
+            "name": "rebuild",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "description": "pagination limit",
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "pagination last cursor value",
+            "name": "next",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/videos.Page"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/api.errorOut"
+            }
+          }
+        }
+      }
+    },
+    "/v1/profiles/{id}": {
+      "get": {
+        "description": "Get user's and its profile information",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "profile"
+        ],
+        "summary": "Get user's profile by id",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "id of a user",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/profiles.Representation"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/api.errorOut"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/api.errorOut"
+            }
+          }
+        }
+      },
+      "patch": {
+        "description": "Change user's name, gender, avatar, etc.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "profile"
+        ],
+        "summary": "Edit user's info",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Bearer ...",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "id of a user",
+            "name": "id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "description": "profile updates",
+            "name": "inp",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/profiles.UpdateInput"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/profiles.Representation"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/api.errorOut"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/api.errorOut"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/api.errorOut"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/api.errorOut"
+            }
+          }
+        }
+      }
+    },
+    "/v1/profiles/{profile_id}/videos": {
+      "get": {
+        "description": "Get the list of videos created by the user.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "videos"
+        ],
+        "summary": "List videos created by the user",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "ID of videos author",
+            "name": "user_id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "sort order, user - prefix for descending sort",
+            "name": "sort",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "description": "pagination limit",
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "pagination last cursor value",
+            "name": "next",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/videos.Page"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/api.errorOut"
+            }
+          }
+        }
+      }
+    },
+    "/v1/profiles/{user_id}/reactions": {
+      "get": {
+        "description": "Get the list of videos liked by the user.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "videos"
+        ],
+        "summary": "List videos liked by the user",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "ID of a user who likes we are trying to get",
+            "name": "user_id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "enum": [
+              "likes"
+            ],
+            "type": "string",
+            "description": "type of the video reaction",
+            "name": "type",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "sort order, user - prefix for descending sort",
+            "name": "sort",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "description": "pagination limit",
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "pagination last cursor value",
+            "name": "next",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/videos.Page"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/api.errorOut"
+            }
+          }
+        }
+      }
+    },
+    "/v1/search": {
+      "get": {
+        "description": "Get the list of videos with match in the title.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "videos"
+        ],
+        "summary": "Search for videos by title fragment",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "text to search for",
+            "name": "text",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "description": "pagination limit",
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "pagination last cursor value",
+            "name": "next",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/videos.Page"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/api.errorOut"
+            }
+          }
+        }
+      }
+    },
+    "/v1/videos": {
+      "post": {
+        "description": "Create new video, get URL to upload video file",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "videos"
+        ],
+        "summary": "Create new video",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Bearer ...",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/videos.FullVideoInfo"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/api.errorOut"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/api.errorOut"
+            }
+          }
+        }
+      }
+    },
+    "/v1/videos/{id}": {
+      "get": {
+        "description": "Get video meta, thumbnail, stream URLs.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "videos"
+        ],
+        "summary": "Get video",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "id of the video object",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/videos.FullVideoInfo"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/api.errorOut"
+            }
+          }
+        }
+      },
+      "put": {
+        "description": "Update video title, description, etc.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "videos"
+        ],
+        "summary": "Update video meta",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Bearer ...",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "id of the video object",
+            "name": "id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "description": "new meta for the video",
+            "name": "inp",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/videos.Input"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/videos.FullVideoInfo"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/api.errorOut"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/api.errorOut"
+            }
+          }
+        }
+      },
+      "delete": {
+        "description": "Delete video altogether",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "videos"
+        ],
+        "summary": "Delete video",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Bearer ...",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "id of the video object",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/api.errorOut"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/api.errorOut"
+            }
+          }
+        }
+      }
+    },
+    "/v1/videos/{id}/publish": {
+      "post": {
+        "description": "Make video publicly visible",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "videos"
+        ],
+        "summary": "Publish video",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Bearer ...",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "id of the video object",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/api.errorOut"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/api.errorOut"
+            }
+          }
+        }
+      }
+    },
+    "/v1/videos/{id}/reactions/{type}": {
+      "post": {
+        "description": "Add reaction reaction to video",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "videos"
+        ],
+        "summary": "Add video reaction",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Bearer ...",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "id of the video object",
+            "name": "id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "enum": [
+              "likes"
+            ],
+            "type": "string",
+            "description": "type of the video reaction",
+            "name": "type",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/api.errorOut"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/api.errorOut"
+            }
+          }
+        }
+      },
+      "delete": {
+        "description": "Remove any reaction from video",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "videos"
+        ],
+        "summary": "Remove video reaction",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Bearer ...",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "id of the video object",
+            "name": "id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "enum": [
+              "likes"
+            ],
+            "type": "string",
+            "description": "type of the video reaction",
+            "name": "type",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/api.errorOut"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/api.errorOut"
+            }
+          }
+        }
+      }
+    },
+    "/v1/videos/{id}/views": {
+      "post": {
+        "description": "Add view interaction to video",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "videos"
+        ],
+        "summary": "Add video view",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Bearer ...",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "id of the video object",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/api.errorOut"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/api.errorOut"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "api.errorOut": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "api.healthCheck": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "type": "string"
+        }
+      }
+    },
+    "models.Background": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      }
+    },
+    "models.NilDate": {
+      "type": "object"
+    },
+    "profiles.ListRepresentation": {
+      "type": "object",
+      "properties": {
+        "avatar": {
+          "type": "string"
+        },
+        "background": {
+          "type": "object",
+          "$ref": "#/definitions/models.Background"
+        },
+        "followed": {
+          "type": "boolean"
+        },
+        "followers_count": {
+          "type": "integer"
+        },
+        "following_count": {
+          "type": "integer"
+        },
+        "id": {
+          "type": "string"
+        },
+        "likes_count": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "nickname": {
+          "type": "string"
+        }
+      }
+    },
+    "profiles.MediaUploadInput": {
+      "type": "object",
+      "required": [
+        "content_type"
+      ],
+      "properties": {
+        "content_type": {
+          "type": "string"
+        }
+      }
+    },
+    "profiles.Page": {
+      "type": "object",
+      "properties": {
+        "limit": {
+          "type": "integer"
+        },
+        "next": {
+          "type": "string"
+        },
+        "results": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/profiles.ListRepresentation"
+          }
+        }
+      }
+    },
+    "profiles.Representation": {
+      "type": "object",
+      "properties": {
+        "about": {
+          "type": "string"
+        },
+        "avatar": {
+          "type": "string"
+        },
+        "background": {
+          "type": "object",
+          "$ref": "#/definitions/models.Background"
+        },
+        "birth_date": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "gender": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "likes_count": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "nickname": {
+          "type": "string"
+        },
+        "phone_number": {
+          "type": "string"
+        }
+      }
+    },
+    "profiles.UpdateInput": {
+      "type": "object",
+      "properties": {
+        "about": {
+          "type": "string"
+        },
+        "birth_date": {
+          "type": "string"
+        },
+        "gender": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "nickname": {
+          "type": "string"
+        }
+      }
+    },
+    "upload.PresignedFields": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "upload.PresignedPOST": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "type": "string"
+        },
+        "presigned_fields": {
+          "type": "object",
+          "$ref": "#/definitions/upload.PresignedFields"
+        }
+      }
+    },
+    "videos.FullVideoInfo": {
+      "type": "object",
+      "properties": {
+        "access": {
+          "type": "string"
+        },
+        "access_upd_at": {
+          "type": "object",
+          "$ref": "#/definitions/models.NilDate"
+        },
+        "animated_preview": {
+          "type": "string"
+        },
+        "asset_id": {
+          "type": "string"
+        },
+        "author_avatar": {
+          "type": "string"
+        },
+        "author_id": {
+          "type": "string"
+        },
+        "author_name": {
+          "type": "string"
+        },
+        "author_nickname": {
+          "type": "string"
+        },
+        "comments_count": {
+          "type": "integer"
+        },
+        "created_at": {
+          "type": "object",
+          "$ref": "#/definitions/models.NilDate"
+        },
+        "description": {
+          "type": "string"
+        },
+        "duration": {
+          "type": "integer"
+        },
+        "id": {
+          "type": "string"
+        },
+        "image_preview": {
+          "type": "string"
+        },
+        "interactions": {
+          "type": "object",
+          "$ref": "#/definitions/videos.InteractionsCounters"
+        },
+        "modified_at": {
+          "type": "object",
+          "$ref": "#/definitions/models.NilDate"
+        },
+        "released_at": {
+          "type": "object",
+          "$ref": "#/definitions/models.NilDate"
+        },
+        "stream": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "upload": {
+          "type": "object",
+          "$ref": "#/definitions/videos.Upload"
+        },
+        "upload_state": {
+          "type": "string"
+        },
+        "user_reactions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/videos.UserReactionInfo"
+          }
+        }
+      }
+    },
+    "videos.Input": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "publish_after_upload": {
+          "type": "boolean"
+        },
+        "title": {
+          "type": "string"
+        }
+      }
+    },
+    "videos.InteractionsCounters": {
+      "type": "object",
+      "properties": {
+        "likes_count": {
+          "type": "integer"
+        },
+        "views_count": {
+          "type": "integer"
+        }
+      }
+    },
+    "videos.ListVideoInfo": {
+      "type": "object",
+      "properties": {
+        "access": {
+          "type": "string"
+        },
+        "access_upd_at": {
+          "type": "object",
+          "$ref": "#/definitions/models.NilDate"
+        },
+        "animated_preview": {
+          "type": "string"
+        },
+        "author_avatar": {
+          "type": "string"
+        },
+        "author_id": {
+          "type": "string"
+        },
+        "author_name": {
+          "type": "string"
+        },
+        "author_nickname": {
+          "type": "string"
+        },
+        "comments_count": {
+          "type": "integer"
+        },
+        "created_at": {
+          "type": "object",
+          "$ref": "#/definitions/models.NilDate"
+        },
+        "id": {
+          "type": "string"
+        },
+        "image_preview": {
+          "type": "string"
+        },
+        "interactions": {
+          "type": "object",
+          "$ref": "#/definitions/videos.InteractionsCounters"
+        },
+        "modified_at": {
+          "type": "object",
+          "$ref": "#/definitions/models.NilDate"
+        },
+        "released_at": {
+          "type": "object",
+          "$ref": "#/definitions/models.NilDate"
+        },
+        "stream": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "upload_state": {
+          "type": "string"
+        },
+        "user_reactions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/videos.UserReactionInfo"
+          }
+        }
+      }
+    },
+    "videos.Page": {
+      "type": "object",
+      "properties": {
+        "limit": {
+          "type": "integer"
+        },
+        "next": {
+          "type": "string"
+        },
+        "results": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/videos.ListVideoInfo"
+          }
+        }
+      }
+    },
+    "videos.Upload": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        }
+      }
+    },
+    "videos.UserReactionInfo": {
+      "type": "object",
+      "properties": {
+        "created_at": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        }
+      }
+    },
+    "admin.CertsOutput": {
+      "type": "object",
+      "properties": {
+        "public_key": {
+          "type": "string"
+        },
+        "signing_method": {
+          "type": "string"
+        }
+      }
+    },
+    "admin.errorMessage": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string",
+          "example": "something went wrong"
+        }
+      }
+    },
+    "api.errorMessage": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string",
+          "example": "something went wrong"
+        }
+      }
+    },
+    "login.Input": {
+      "type": "object",
+      "required": [
+        "client_id"
+      ],
+      "properties": {
+        "client_id": {
+          "type": "string"
+        },
+        "code": {
+          "type": "string"
+        },
+        "grant_type": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "refresh_token": {
+          "type": "string"
+        },
+        "subject_token": {
+          "type": "string"
+        },
+        "subject_token_provider": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        }
+      }
+    },
+    "models.JSONB": {
+      "type": "array",
+      "items": {
+        "type": "integer"
+      }
+    },
+    "models.NullArray": {
+      "type": "object"
+    },
+    "models.NullGender": {
+      "type": "object"
+    },
+    "models.NullString": {
+      "type": "object"
+    },
+    "models.NullTime": {
+      "type": "object"
+    },
+    "models.User": {
+      "type": "object",
+      "properties": {
+        "avatar": {
+          "type": "object",
+          "$ref": "#/definitions/models.NullString"
+        },
+        "background": {
+          "type": "object",
+          "$ref": "#/definitions/models.JSONB"
+        },
+        "birth_date": {
+          "type": "object",
+          "$ref": "#/definitions/models.NullTime"
+        },
+        "email": {
+          "type": "object",
+          "$ref": "#/definitions/models.NullString"
+        },
+        "email_verified": {
+          "type": "boolean"
+        },
+        "family_name": {
+          "type": "object",
+          "$ref": "#/definitions/models.NullString"
+        },
+        "gender": {
+          "type": "object",
+          "$ref": "#/definitions/models.NullGender"
+        },
+        "given_name": {
+          "type": "object",
+          "$ref": "#/definitions/models.NullString"
+        },
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "object",
+          "$ref": "#/definitions/models.NullString"
+        },
+        "nickname": {
+          "type": "object",
+          "$ref": "#/definitions/models.NullString"
+        },
+        "phone_number": {
+          "type": "object",
+          "$ref": "#/definitions/models.NullString"
+        },
+        "phone_verified": {
+          "type": "boolean"
+        },
+        "roles": {
+          "type": "object",
+          "$ref": "#/definitions/models.NullArray"
+        }
+      }
+    },
+    "oauth2.Token": {
+      "type": "object",
+      "properties": {
+        "access_token": {
+          "type": "string"
+        },
+        "expiry": {
+          "type": "integer"
+        },
+        "id_token": {
+          "type": "string"
+        },
+        "refresh_token": {
+          "type": "string"
+        },
+        "scope": {
+          "type": "string"
+        },
+        "token_type": {
+          "type": "string"
+        },
+        "user_id": {
+          "type": "string"
+        }
+      }
+    },
+    "oauth2.User": {
+      "type": "object",
+      "properties": {
+        "avatar": {
+          "type": "string"
+        },
+        "background": {
+          "type": "object",
+          "$ref": "#/definitions/models.JSONB"
+        },
+        "birthDate": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "emailVerified": {
+          "type": "boolean"
+        },
+        "familyName": {
+          "type": "string"
+        },
+        "gender": {
+          "type": "string"
+        },
+        "givenName": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string"
+        },
+        "phoneVerified": {
+          "type": "boolean"
+        },
+        "provider": {
+          "type": "string"
+        }
+      }
+    },
+    "registration.Input": {
+      "type": "object",
+      "required": [
+        "client_id",
+        "password"
+      ],
+      "properties": {
+        "avatar": {
+          "type": "string"
+        },
+        "background": {
+          "type": "object",
+          "$ref": "#/definitions/models.JSONB"
+        },
+        "birth_date": {
+          "type": "string"
+        },
+        "client_id": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "family_name": {
+          "type": "string"
+        },
+        "gender": {
+          "type": "string"
+        },
+        "given_name": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "nickname": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "phone_number": {
+          "type": "string"
+        }
+      }
+    },
+    "registration.Output": {
+      "type": "object",
+      "properties": {
+        "access_token": {
+          "type": "string"
+        },
+        "expires_in": {
+          "type": "integer"
+        },
+        "id_token": {
+          "type": "string"
+        },
+        "refresh_token": {
+          "type": "string"
+        },
+        "token_type": {
+          "type": "string"
+        },
+        "user": {
+          "type": "object",
+          "$ref": "#/definitions/models.User"
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "ApiKeyAuth": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header"
+    }
+  },
+  "tags": [
+    {
+      "description": "technical endpoints",
+      "name": "management"
+    },
+    {
+      "description": "authentication API",
+      "name": "auth"
+    },
+    {
+      "description": "endpoints related to user's profile",
+      "name": "profile"
+    }
+  ]
+}

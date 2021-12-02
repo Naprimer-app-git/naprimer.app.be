@@ -1,0 +1,9 @@
+{
+  "UGC_PATH":"https://ugc-api.megogo.dev/v1",
+  "UGC_UUID":"xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "UGC_TOKEN":"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+  "CLIENT_ID":"xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "CLIENT_SECRET":"naprimer_secret_key",
+  "CLIENT_ISSUER":"naprimer.app"
+}
+
